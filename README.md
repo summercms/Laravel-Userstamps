@@ -5,7 +5,7 @@ Provides an Eloquent trait to automatically maintain created_by and updated_by (
 ## Requirements
 
 * This package requires PHP 5.6+
-* It works with Laravel 5.x (and may work with earlier versions too).
+* It works with Laravel 5.2+.
 
 ## Installation
 
