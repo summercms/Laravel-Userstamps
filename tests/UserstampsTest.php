@@ -93,6 +93,13 @@ class UserstampsTest extends TestCase
         ]);
     }
 
+    protected function createFooWithNullColumnNames()
+    {
+        return FooWithNullColumnNames::create([
+            'bar' => 'foo',
+        ]);
+    }
+
     protected function createFooWithBars()
     {
         $foo = $this->createFoo();
@@ -230,6 +237,31 @@ class UserstampsTest extends TestCase
         $this->assertNull($foo->alt_deleted_by);
     }
 
+    public function testNullColumnNamesAreSupported()
+    {
+        $this->app['auth']->loginUsingId(1);
+
+        $foo = $this->createFooWithNullColumnNames();
+
+        $this->assertEquals(1, $foo->created_by);
+        $this->assertEquals(1, $foo->updated_by);
+
+        $this->app['auth']->loginUsingId(2);
+
+        $foo->update([
+            'bar' => 'bar',
+        ]);
+
+        $this->assertEquals(2, $foo->updated_by);
+
+        $foo->delete();
+
+        $this->assertEquals(2, $foo->deleted_by);
+
+        $foo->restore();
+        $this->assertNull($foo->deleted_by);
+    }
+
     public function testStopUserstampingMethodWorks()
     {
         $this->app['auth']->loginUsingId(1);
@@ -334,6 +366,19 @@ class FooWithCustomColumnNames extends Model
     const CREATED_BY = 'alt_created_by';
     const UPDATED_BY = 'alt_updated_by';
     const DELETED_BY = 'alt_deleted_by';
+}
+
+class FooWithNullColumnNames extends Model
+{
+    use SoftDeletes, Userstamps;
+
+    public $table = 'foos';
+    public $timestamps = false;
+    protected $guarded = [];
+
+    const CREATED_BY = null;
+    const UPDATED_BY = null;
+    const DELETED_BY = null;
 }
 
 class Bar extends Model

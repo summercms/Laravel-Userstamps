@@ -84,7 +84,7 @@ trait Userstamps
      */
     public function getCreatedByColumn()
     {
-        return defined('static::CREATED_BY') ? static::CREATED_BY : 'created_by';
+        return defined('static::CREATED_BY') && ! is_null(static::CREATED_BY) ? static::CREATED_BY : 'created_by';
     }
 
     /**
@@ -94,7 +94,7 @@ trait Userstamps
      */
     public function getUpdatedByColumn()
     {
-        return defined('static::UPDATED_BY') ? static::UPDATED_BY : 'updated_by';
+        return defined('static::UPDATED_BY') && ! is_null(static::UPDATED_BY) ? static::UPDATED_BY : 'updated_by';
     }
 
     /**
@@ -104,7 +104,7 @@ trait Userstamps
      */
     public function getDeletedByColumn()
     {
-        return defined('static::DELETED_BY') ? static::DELETED_BY : 'deleted_by';
+        return defined('static::DELETED_BY') && ! is_null(static::DELETED_BY) ? static::DELETED_BY : 'deleted_by';
     }
 
     /**

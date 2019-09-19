@@ -12,7 +12,7 @@ class Updating
      */
     public function handle($model)
     {
-        if (! $model->isUserstamping() || is_null($model->getUpdatedByColumn())) {
+        if (! $model->isUserstamping()) {
             return;
         }
 
