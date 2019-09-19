@@ -161,6 +161,21 @@ class UserstampsTest extends TestCase
         $this->assertEquals(2, $foo->updated_by);
     }
 
+    public function testUpdatedByIsNotChangedWhenUserIsNotPresent()
+    {
+        $this->app['auth']->loginUsingId(1);
+
+        $foo = $this->createFoo();
+
+        $this->app['auth']->logout();
+
+        $foo->update([
+            'bar' => 'bar',
+        ]);
+
+        $this->assertEquals(1, $foo->updated_by);
+    }
+
     public function testDeletedByIsSetOnSoftDeletingModelWhenUserIsPresent()
     {
         $this->app['auth']->loginUsingId(1);
