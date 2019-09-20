@@ -53,16 +53,6 @@ class UserstampsTest extends TestCase
             $table->unsignedBigInteger('alt_deleted_by')->nullable();
         });
 
-        Schema::create('bars', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedBigInteger('foo_id');
-            $table->string('foo');
-            $table->softDeletes();
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
-            $table->unsignedBigInteger('deleted_by')->nullable();
-        });
-
         TestUser::create([
             'id' => 1,
         ]);
@@ -98,19 +88,6 @@ class UserstampsTest extends TestCase
         return FooWithNullColumnNames::create([
             'bar' => 'foo',
         ]);
-    }
-
-    protected function createFooWithBars()
-    {
-        $foo = $this->createFoo();
-
-        $foo->bars()->saveMany([
-            new Bar([
-                'foo' => 1,
-            ]),
-        ]);
-
-        return $foo;
     }
 
     public function testCreatedByAndUpdatedByIsSetOnNewModelWhenUserIsPresent()
@@ -355,10 +332,6 @@ class Foo extends Model
     public $timestamps = false;
     protected $guarded = [];
 
-    public function bars()
-    {
-        return $this->hasMany(Bar::class)->withTrashed();
-    }
 }
 
 class FooWithSoftDeletes extends Model
@@ -394,20 +367,6 @@ class FooWithNullColumnNames extends Model
     const CREATED_BY = null;
     const UPDATED_BY = null;
     const DELETED_BY = null;
-}
-
-class Bar extends Model
-{
-    use SoftDeletes, Userstamps;
-
-    public $table = 'bars';
-    public $timestamps = false;
-    protected $guarded = [];
-
-    public function foo()
-    {
-        return $this->belongsTo(Foo::class);
-    }
 }
 
 class TestUser extends Authenticatable
