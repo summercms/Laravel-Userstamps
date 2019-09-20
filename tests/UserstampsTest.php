@@ -399,7 +399,6 @@ class Foo extends Model
     public $table = 'foos';
     public $timestamps = false;
     protected $guarded = [];
-
 }
 
 class FooWithSoftDeletes extends Model
