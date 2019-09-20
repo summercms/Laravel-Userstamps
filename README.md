@@ -17,7 +17,7 @@
 
 ## About Laravel Userstamps
 
-Laravel Userstamps provides an Eloquent trait which automatically handles `created_by` and `updated_by` columns on your model, populated by the currently authenticated user in your application. 
+Laravel Userstamps provides an Eloquent trait which automatically maintains `created_by` and `updated_by` columns on your model, populated by the currently authenticated user in your application.
 
 When using the Laravel `SoftDeletes` trait, a `deleted_by` column is also handled by this package.
 
@@ -65,7 +65,7 @@ use Wildside\Userstamps\Userstamps;
 class Foo extends Model {
 
     use Userstamps;
-    
+
     const CREATED_BY = 'alt_created_by';
     const UPDATED_BY = 'alt_updated_by';
     const DELETED_BY = 'alt_deleted_by';
@@ -73,7 +73,7 @@ class Foo extends Model {
 ```
 
 When using this trait, helper relationships are available to let you retrieve the user who created, updated and deleted (when using the Laravel `SoftDeletes` trait) your model.
-    
+
 ```php
 $model -> creator; // the user who created the model
 $model -> editor; // the user who last updated the model
