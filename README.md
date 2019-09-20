@@ -93,7 +93,7 @@ This package works by by hooking into Eloquent's model event listeners, and is s
 
 When you make changes to models that bypass Eloquent, the event listeners won't be fired and userstamps will not be updated.
 
-A common example is the mass updating or deleting of model relations.
+Commonly this would happen if mass updating or deleting models, or their relations.
 
 In this example, model relations are updated via Eloquent and userstamps **will** be maintained:
 
@@ -104,7 +104,7 @@ $model->foos->each(function ($item) {
 });
 ```
 
-However, in this example, model relations are mass-updated and bypass Eloquent. Userstamps **will not** be maintained:
+However, in this example, model relations are mass updated and bypass Eloquent. Userstamps **will not** be maintained:
 
 ```php
 $model->foos()->update([
