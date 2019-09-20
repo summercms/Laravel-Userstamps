@@ -44,6 +44,7 @@ class UserstampsTest extends TestCase
         Schema::create('foos', function (Blueprint $table) {
             $table->increments('id');
             $table->string('bar');
+            $table->timestamps();
             $table->softDeletes();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
@@ -322,6 +323,73 @@ class UserstampsTest extends TestCase
 
         $this->assertEquals($user, $foo->destroyer);
     }
+
+    public function testUpdateWithUserstampsMethod()
+    {
+        $this->app['auth']->loginUsingId(1);
+
+        $this->createFoo();
+
+        $this->app['auth']->loginUsingId(2);
+
+        Foo::where('bar', 'foo')->updateWithUserstamps([
+            'bar' => 'bar',
+        ]);
+
+        $this->assertEquals(2, Foo::first()->updated_by);
+    }
+
+    public function testDeleteWithUserstampsMethod()
+    {
+        $this->app['auth']->loginUsingId(1);
+
+        $this->createFooWithSoftDeletes();
+
+        $this->app['auth']->loginUsingId(2);
+
+        FooWithSoftDeletes::where('bar', 'foo')->deleteWithUserstamps();
+
+        $this->assertEquals(2, FooWithSoftDeletes::withTrashed()->first()->deleted_by);
+    }
+
+    public function testDeleteWithUserstampsMethodDoesntTouchUpdatedBy()
+    {
+        $this->app['auth']->loginUsingId(1);
+
+        $foo = $this->createFooWithSoftDeletes();
+        $updatedAt = $foo->updated_at;
+
+        $this->app['auth']->loginUsingId(2);
+
+        FooWithSoftDeletes::where('bar', 'foo')->deleteWithUserstamps();
+
+        $foo = FooWithSoftDeletes::withTrashed()->first();
+
+        $this->assertEquals(1, $foo->updated_by);
+        $this->assertEquals(2, $foo->deleted_by);
+    }
+
+    public function testBuilderMethodWorksWithCustomColumnNames()
+    {
+        $this->app['auth']->loginUsingId(1);
+
+        $this->createFooWithCustomColumnNames();
+
+        $this->app['auth']->loginUsingId(2);
+
+        FooWithCustomColumnNames::where('bar', 'foo')->updateWithUserstamps([
+            'bar' => 'bar',
+        ]);
+
+        FooWithCustomColumnNames::where('bar', 'bar')->deleteWithUserstamps();
+
+        $foo = FooWithCustomColumnNames::withTrashed()->where('bar', 'bar')->first();
+
+        $this->assertNull($foo->updated_by);
+        $this->assertNull($foo->deleted_by);
+        $this->assertEquals(2, $foo->alt_updated_by);
+        $this->assertEquals(2, $foo->alt_deleted_by);
+    }
 }
 
 class Foo extends Model
@@ -339,7 +407,6 @@ class FooWithSoftDeletes extends Model
     use SoftDeletes, Userstamps;
 
     public $table = 'foos';
-    public $timestamps = false;
     protected $guarded = [];
 }
 
@@ -348,7 +415,6 @@ class FooWithCustomColumnNames extends Model
     use SoftDeletes, Userstamps;
 
     public $table = 'foos';
-    public $timestamps = false;
     protected $guarded = [];
 
     const CREATED_BY = 'alt_created_by';
@@ -361,7 +427,6 @@ class FooWithNullColumnNames extends Model
     use SoftDeletes, Userstamps;
 
     public $table = 'foos';
-    public $timestamps = false;
     protected $guarded = [];
 
     const CREATED_BY = null;
