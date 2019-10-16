@@ -18,6 +18,8 @@ trait Userstamps
      */
     public static function bootUserstamps()
     {
+        static::addGlobalScope(new UserstampsScope);
+
         static::registerListeners();
     }
 

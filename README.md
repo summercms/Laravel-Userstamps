@@ -87,13 +87,13 @@ $model -> stopUserstamping(); // stops userstamps being maintained on the model
 $model -> startUserstamping(); // resumes userstamps being maintained on the model
 ```
 
-## Limitations
+## Workarounds
 
 This package works by by hooking into Eloquent's model event listeners, and is subject to the same limitations of all such listeners.
 
 When you make changes to models that bypass Eloquent, the event listeners won't be fired and userstamps will not be updated.
 
-Commonly this would happen if mass updating or deleting models, or their relations.
+Commonly this will happen if bulk updating or deleting models, or their relations.
 
 In this example, model relations are updated via Eloquent and userstamps **will** be maintained:
 
@@ -104,11 +104,31 @@ $model->foos->each(function ($item) {
 });
 ```
 
-However, in this example, model relations are mass updated and bypass Eloquent. Userstamps **will not** be maintained:
+However in this example, model relations are bulk updated and bypass Eloquent. Userstamps **will not** be maintained:
 
 ```php
 $model->foos()->update([
     'bar' => 'x',
+]);
+```
+
+As a workaroud to this issue two helper methods are available - `updateWithUserstamps` and `deleteWithUserstamps`. Their behaviour is identical to `update` and `delete`, but they ensure the `updated_by` and `deleted_by` properties are maintained on the model.
+
+ You generally won't have to use these methods, unless making bulk updates that bypass Eloquent events.
+
+ In this example, models are bulk updated and userstamps **will not** be maintained:
+
+```php
+$model->where('name', 'foo')->update([
+    'name' => 'bar',
+]);
+```
+
+However in this example, models are bulk updated using the helper method and userstamps **will** be maintained:
+
+```php
+$model->where('name', 'foo')->updateWithUserstamps([
+    'name' => 'bar',
 ]);
 ```
 
