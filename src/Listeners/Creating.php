@@ -2,6 +2,8 @@
 
 namespace Wildside\Userstamps\Listeners;
 
+use Illuminate\Support\Facades\Auth;
+
 class Creating
 {
     /**
@@ -17,11 +19,11 @@ class Creating
         }
 
         if (is_null($model->{$model->getCreatedByColumn()})) {
-            $model->{$model->getCreatedByColumn()} = auth()->id();
+            $model->{$model->getCreatedByColumn()} = Auth::id();
         }
 
         if (is_null($model->{$model->getUpdatedByColumn()}) && ! is_null($model->getUpdatedByColumn())) {
-            $model->{$model->getUpdatedByColumn()} = auth()->id();
+            $model->{$model->getUpdatedByColumn()} = Auth::id();
         }
     }
 }

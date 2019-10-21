@@ -2,6 +2,8 @@
 
 namespace Wildside\Userstamps\Listeners;
 
+use Illuminate\Support\Facades\Auth;
+
 class Updating
 {
     /**
@@ -12,10 +14,10 @@ class Updating
      */
     public function handle($model)
     {
-        if (! $model->isUserstamping() || is_null(auth()->id())) {
+        if (! $model->isUserstamping() || is_null(Auth::id())) {
             return;
         }
 
-        $model->{$model->getUpdatedByColumn()} = auth()->id();
+        $model->{$model->getUpdatedByColumn()} = Auth::id();
     }
 }
