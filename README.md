@@ -137,7 +137,7 @@ $model->where('name', 'foo')->updateWithUserstamps([
 ## Sponsors
 
 <a href="https://wildside.uk">
-    <img src="https://wildside.uk/images/logo.svg" height="50">
+    <img src="https://wildside.uk/images/wildside-logo.svg" height="50">
 </a>
 
 This open-source software is developed and maintained by <a href="https://wildside.uk">WILDSIDE</a>.
