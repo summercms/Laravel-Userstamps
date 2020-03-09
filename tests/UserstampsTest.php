@@ -230,14 +230,14 @@ class UserstampsTest extends TestCase
         $this->assertNull($foo->alt_deleted_by);
     }
 
-    public function testNullColumnNamesAreSupported()
+    public function testNullColumnNamesDisableUserstamps()
     {
         $this->app['auth']->loginUsingId(1);
 
         $foo = $this->createFooWithNullColumnNames();
 
-        $this->assertEquals(1, $foo->created_by);
-        $this->assertEquals(1, $foo->updated_by);
+        $this->assertNull($foo->created_by);
+        $this->assertNull($foo->updated_by);
 
         $this->app['auth']->loginUsingId(2);
 
@@ -245,11 +245,11 @@ class UserstampsTest extends TestCase
             'bar' => 'bar',
         ]);
 
-        $this->assertEquals(2, $foo->updated_by);
+        $this->assertNull($foo->updated_by);
 
         $foo->delete();
 
-        $this->assertEquals(2, $foo->deleted_by);
+        $this->assertNull($foo->deleted_by);
 
         $foo->restore();
         $this->assertNull($foo->deleted_by);
