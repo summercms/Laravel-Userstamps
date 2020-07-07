@@ -77,16 +77,16 @@ class Foo extends Model {
 When using this trait, helper relationships are available to let you retrieve the user who created, updated and deleted (when using the Laravel `SoftDeletes` trait) your model.
 
 ```php
-$model -> creator; // the user who created the model
-$model -> editor; // the user who last updated the model
-$model -> destroyer; // the user who deleted the model
+$model->creator; // the user who created the model
+$model->editor; // the user who last updated the model
+$model->destroyer; // the user who deleted the model
 ```
 
 Methods are also available to temporarily stop the automatic maintaining of userstamps on your models:
 
 ```php
-$model -> stopUserstamping(); // stops userstamps being maintained on the model
-$model -> startUserstamping(); // resumes userstamps being maintained on the model
+$model->stopUserstamping(); // stops userstamps being maintained on the model
+$model->startUserstamping(); // resumes userstamps being maintained on the model
 ```
 
 ## Workarounds
